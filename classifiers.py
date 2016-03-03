@@ -21,8 +21,8 @@ from sklearn.linear_model import SGDClassifier
 def repeat_fit(model, normalized_data, repetitions):
     logger.write("\n\n-----------------------------------------------------------------------------------");
     logger.write(
-        "Entrenando modelo durante {0} veces. Usando datos {1}.\nResultados sobre datos de Test y datos de Entrenamiento.\n".format(
-            repetitions, "Normalizados" if normalized_data else "Reales"))
+        "Training model {0} times. Using data {1}.\nThe showed results are over Test and Training data.\n".format(
+            repetitions, "Normalized" if normalized_data else "Real"))
     best_score = float("-inf")
     best_model = None
 
@@ -31,9 +31,9 @@ def repeat_fit(model, normalized_data, repetitions):
         if score > best_score:
             best_score = score
             best_model = i
-            logger.write("Test:           ", end="")
+            logger.write("Test : ", end="")
             model.print_metrics(show_extended=False)
-            logger.write("Entrenamiento:  ", end="")
+            logger.write("Train: ", end="")
             model.print_metrics(show_extended=False, use_train_data=True)
             logger.write("\n")
 
@@ -41,7 +41,7 @@ def repeat_fit(model, normalized_data, repetitions):
 
 def get_best_sgdmodel_parametrization(normalized_data):
     logger.write("\n\n-----------------------------------------------------------------------------------")
-    logger.write("Analizando diferentes configuraciones del clasificador SGDClassifier. Datos {}\n".format("Normalizados" if normalized_data else "Reales"))
+    logger.write("Analyzing different configurations for the SGDClassifier classifier. Data {}\n".format("Normalized" if normalized_data else "Real"))
     best_score = float("-inf")
     best_model = None
     for i, model in enumerate(sgd_models):
@@ -51,15 +51,15 @@ def get_best_sgdmodel_parametrization(normalized_data):
             best_model = model
 
     # We show statistics of variation with highest score
-    logger.write("\n\nLa parametrización del modelo SGDClassifier con mejores resultados ha sido:", best_model.name)
-    logger.write("Estadísticas:\n");
+    logger.write("\n\nThe best parametrization has been:", best_model.name)
+    logger.write("Statistics:\n");
     best_model.print_metrics(show_extended=True)
 
     return best_model
 
 def try_different_model(normalized_data):
     logger.write("\n\n-----------------------------------------------------------------------------------")
-    logger.write("Resultados con diferentes tipos de clasificadores.Datos {}\n".format("Normalizados" if normalized_data else "Reales"))
+    logger.write("Results of different types of classifiers. Data {}\n".format("Normalized" if normalized_data else "Real"))
 
     for i, model in enumerate(models):
         model.fit(normalized=normalized_data).print_metrics()
