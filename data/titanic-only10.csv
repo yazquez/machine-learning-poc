@@ -1,0 +1,11 @@
+row.names,pclass,survived,name,age,embarked,home.dest,room,ticket,boat,sex
+1,1st,1,"Allen, Miss Elisabeth Walton",29,Cherbourg,"St Louis, MO",B-5,24160 L221,2,female
+2,1st,0,"Allison, Miss Helen Loraine",2,Southampton,"Montreal, PQ / Chesterville, ON",C26,,,female
+3,1st,0,"Allison, Mr Hudson Joshua Creighton",30,Queenstown,"Montreal, PQ / Chesterville, ON",C26,,(135),male
+4,1st,0,"Allison, Mrs Hudson J.C. (Bessie Waldo Daniels)",NA,Southampton,"Montreal, PQ / Chesterville, ON",C26,,,female
+5,2st,1,"Allison, Master Hudson Trevor",0.9167,NA,"Montreal, PQ / Chesterville, ON",C22,,11,male
+6,1st,1,"Anderson, Mr Harry",47,Southampton,"New York, NY",E-12,,3,male
+7,1st,1,"Andrews, Miss Kornelia Theodosia",NA,NA,"Hudson, NY",D-7,13502 L77,10,female
+8,1st,0,"Andrews, Mr Thomas, jr",39,Queenstown,"Belfast, NI",A-36,,,male
+9,2st,1,"Appleton, Mrs Edward Dale (Charlotte Lamson)",58,Southampton,"Bayside, Queens, NY",C-101,,2,female
+10,2st,1,"Appleton, Mrs Edward Dale (Charlotte Lamson)",58,Cherbourg,"Bayside, Queens, NY",C-101,,2,female
