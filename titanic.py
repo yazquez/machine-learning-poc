@@ -1,5 +1,5 @@
 import numpy as np
-# import csv
+import csv
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.cross_validation import train_test_split
@@ -7,7 +7,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn import metrics
 
 def load_titanic():
-    with open('../data/titanic.csv', "r") as csvfile:
+    with open('./data/titanic.csv', "r") as csvfile:
         lector = csv.reader(csvfile, delimiter=",", quotechar='"')
         feature_names = np.array(lector.__next__())
         data = []
