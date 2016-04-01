@@ -1,0 +1,14 @@
+def mas_cercano(X_train,docs,nuevo_doc,vectorizer, dist=distancia_euclidea):
+    X_n=vectorizer.transform([nuevo_doc])[0]
+    mejor_doc=None
+    mejor_dist=float("inf")
+    mejor_i=None
+    
+    for i,(doc,doc_vec) in enumerate(zip(docs,X_train)):
+        d=dist(doc_vec,X_n)
+        print("=== Documento {0} con distancia={1:.2f}: {2}".format(i, d, doc))
+        if d < mejor_dist:
+            mejor_dist = d
+            mejor_i = i
+    
+    print("El documento más cercano es {0} con distancia={1:.2f}".format(mejor_i, mejor_dist))
