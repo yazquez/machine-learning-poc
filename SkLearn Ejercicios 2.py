@@ -1,4 +1,6 @@
+import gensim
 import nltk
+from gensim import corpora
 from nltk.corpus import stopwords
 from sklearn.datasets import load_files
 from sklearn.cross_validation import train_test_split
@@ -9,13 +11,54 @@ from sklearn import metrics
 
 
 
-def load_data():
+
+
+def load_data2():
     # Descargamos los datos, los descomprimimos en la carpeta ./data/txt_sentoken
     # "http://www.cs.cornell.edu/people/pabo/movie-review-data/review_polarity.tar.gz")
     dataset = load_files('./data/txt_sentoken', shuffle=False)
     print("n_samples: %d" % len(dataset.data))
 
     return dataset
+
+def load_data():
+    try:
+        from urllib import urlopen
+    except ImportError:
+        from urllib.request import urlopen
+    import os
+    import tarfile
+    from contextlib import closing
+    try:
+        from urllib import urlopen
+    except ImportError:
+        from urllib.request import urlopen
+
+
+    URL = ("http://www.cs.cornell.edu/people/pabo/"
+           "movie-review-data/review_polarity.tar.gz")
+
+    ARCHIVE_NAME = URL.rsplit('/', 1)[1]
+    DATA_FOLDER = "txt_sentoken"
+
+
+    if not os.path.exists(DATA_FOLDER):
+
+        if not os.path.exists(ARCHIVE_NAME):
+            print("Downloading dataset from %s (3 MB)" % URL)
+            opener = urlopen(URL)
+            with open(ARCHIVE_NAME, 'wb') as archive:
+                archive.write(opener.read())
+
+        print("Decompressing %s" % ARCHIVE_NAME)
+        with closing(tarfile.open(ARCHIVE_NAME, "r:gz")) as archive:
+            archive.extractall(path='.')
+        os.remove(ARCHIVE_NAME)
+
+    from sklearn.datasets import load_files
+    return load_files('txt_sentoken', shuffle=False)
+
+
 
 dataset = load_data()
 
@@ -27,12 +70,13 @@ print(dataset.data[2])
 print()
 print("Sentimiento : %d" % dataset.target[2])
 
+
 #
-# The case study on movie-reviews has been considered and repository of movie reviews is stored in unstructured
-# textual format. This unstructured data need to be converted in to meaningful data in order to apply machine learning
-# algorithms.  The  processing  of  unstructured  data  includes  removal  of  vague  information,  removal  of  unnecessary
-# blank spaces. This processed data is converted to numerical vectors where each vector corresponds to a review and
-# entries of each vector represent the presence of feature in that particular review.
+# El caso de estudio de caso sobre las críticas de películas se ha considerado y el repositorio de reseñas de películas se almacenan en
+# un formato desestructurado#. Estos datos no estructurados deben ser convertidos a datos significativos con el fin de aplicar el algoritmo
+# de aprendizaje automático. El tratamiento de los datos no estructurados incluye la eliminación de la información vaga o la eliminación de innecesarios
+# espacios en blanco. Estos datos procesados se convierte a vectores numéricos donde cada columna corresponde a una de las palabras del corpus
+# y el valor corresponde a la presencia de esa palabra en el documento en cuestión
 
 # Para el procesamiento de los textos vamos a excluir las llamadas "Stop words"
 nltk.download("stopwords")
@@ -40,9 +84,9 @@ stop_words_english = stopwords.words("english")
 
 # Tambien vamos a usar Stemming, es un método para reducir una palabra a su raíz
 # Es decir las palabras fool y foolish ylas consideraría una coincidencia.
-# El proceso de stemming o lemmatizaci´on consiste en quitar la desinencia de las diferentes
-# t´erminos, para llevarlos a su ra´ız. Esta etapa se lleva a cabo con el objetivo de que el algoritmo
-# detecte cuando se est´an tratando los mismos conceptos, dado que se utilizan las mismas
+# El proceso de stemming o lemmatización consiste en quitar la desinencia de las diferentes
+# téerminos, para llevarlos a su raíz. Esta etapa se lleva a cabo con el objetivo de que el algoritmo
+# detecte cuando se están tratando los mismos conceptos, dado que se utilizan las mismas
 # palabras. Por ejemplo, las palabras “canta”, “cantaba”, “cantando”, pueden ser asociadas al
 # verbo “cantar”.
 
@@ -72,11 +116,9 @@ print(vectorizer.get_feature_names())
 print(vectorized_data.shape)
 
 
+# El algoritmo de aprendizaje es aplicable cuando el conjunto de datos de las etiqueta está disponible. El conjunto de datos utilizados
+# En este estudio se etiqueta todo conjunto de datos y cada revisión en el corpus se etiqueta, ya sea positivo o negativo.
 
-# The supervised machine learning algorithm is applicable where the labeled dataset is available. The dataset used
-# in this study is labeled dataset and each review in the corpus is either labeled as positive or negative. Two diơerent
-# machine learning algorithms considered in this study this is going to be Stochastic Gradient Descent (SGD) is a simple
-# yet very efficient approach to discriminative learning of linear classifiers
 
 # split the dataset in training and test set:
 X_train, X_test, y_train, y_test = train_test_split(vectorized_data, dataset.target, test_size=0.25, random_state=3948)
@@ -97,70 +139,21 @@ print("Confusion Matrix\n", metrics.confusion_matrix(y_test, y_predict))
 #    https://radimrehurek.com/gensim/tutorial.html. Scikit-learn también tiene una implementación de  Usar alguno de los modelos de gensim por ejemplo LDA o LSA para
 #    realizar la tarea de clasificación anterior.
 
-# Gensim utiliza un paradigma muy poderoso en el ´area de procesamiento de lenguaje
+# Gensim utiliza un paradigma muy poderoso en el área de procesamiento de lenguaje
 # natural, denominado VSM (modelo de espacio de vectores), en el cual se representan los
-# documentos de un corpus como vectores de un espacio multidimensional. Esta representaci´on
-# explota la idea de que los textos en el ´area del modelado de t´opicos se pueden expresar seg´un
-# un n´umero de conceptos, lo que aumenta la eficiencia y tambi´en ayuda a eliminar ruido.
+# documentos de un corpus como vectores de un espacio multidimensional. Esta representación
+# explota la idea de que los textos en el área del modelado de tópicos se pueden expresar según
+# un número de conceptos, lo que aumenta la eficiencia y también ayuda a eliminar ruido.
 
+# LSI y	LDA son métodos	de	Reducción	de	Dimensionalidad, principalmente usados	en	textos,
+# pero ya desde hace varios año con	otras aplicaciones
+# LSI : Latent	SemanDc	Indexing)
+# LDA : Latent	Dirichlet	AllocaDon
 
-# LSI	&	LDA
-# • Métodos	de	Reducción	de	Dimensionalidad,
-# principalmente usados	en	textos,	pero ya
-# desde hace varios años	con	otras aplicaciones
-# LSI: Latent	SemanDc	Indexing)
-# LDA	 Latent	Dirichlet	AllocaDon
+# Creamos el modelo LDA
 
+docs = [[english_stemmer.stem(word) for word in document.decode("utf-8").lower().split() if word not in stop_words_english] for document in dataset.data]
+dictionary = corpora.Dictionary(docs)
+corpus = [dictionary.doc2bow(doc) for doc in docs]
 
-from gensim.corpora import TextCorpus, MmCorpus, Dictionary
-
-from gensim import utils
-from gensim.models.doc2vec import LabeledSentence
-from gensim.models import Doc2Vec
-
-# numpy
-import numpy
-
-# random
-from random import shuffle
-
-# classifier
-from sklearn.linear_model import LogisticRegression
-
-class LabeledLineSentence(object):
-    def __init__(self, sources):
-        self.sources = sources
-
-        flipped = {}
-
-        # make sure that keys are unique
-        for key, value in sources.items():
-            if value not in flipped:
-                flipped[value] = [key]
-            else:
-                raise Exception('Non-unique prefix encountered')
-
-    def __iter__(self):
-        for source, prefix in self.sources.items():
-            with utils.smart_open(source) as fin:
-                for item_no, line in enumerate(fin):
-                    yield LabeledSentence(utils.to_unicode(line).split(), [prefix + '_%s' % item_no])
-
-    def to_array(self):
-        self.sentences = []
-        for source, prefix in self.sources.items():
-            with utils.smart_open(source) as fin:
-                for item_no, line in enumerate(fin):
-                    self.sentences.append(LabeledSentence(utils.to_unicode(line).split(), [prefix + '_%s' % item_no]))
-        return self.sentences
-
-    def sentences_perm(self):
-        shuffle(self.sentences)
-        return self.sentences
-
-
-
-
-
-
-
+lda = gensim.models.ldamodel.LdaModel(corpus=corpus, id2word=dictionary, num_topics=2, update_every=1, chunksize=10000, passes=1)

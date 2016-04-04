@@ -37,15 +37,7 @@ def load_data():
 
 dataset = load_data()
 
-# 1. El analisis de sentimiento es un proceso por el que se intenta determinar si un texto tiene una carga
-#    positiva o negativa. El dataset cargado contiene opiniones sobre varias películas. Estás opiniones han sido
-#    categorizadas como positivas (1) o negativas (0).
-#    Se pide crear un modelo que sea capaz de determinar el sentimiento de la crítica de una película.
-print(dataset.data[2])
-print()
-print("Sentimiento : %d" % dataset.target[2])
-
-class LabeledLineSentence(object):
+class LabeledLineSentence1(object):
     def __init__(self, doc_list, labels_list):
        self.labels_list = labels_list
        self.doc_list = doc_list
@@ -62,16 +54,34 @@ class LabeledLineSentence(object):
         shuffle(self.sentences)
         return self.sentences
 
+class LabeledLineSentence(object):
+    def __init__(self, doc_list, labels_list):
+       self.labels_list = labels_list
+       self.doc_list = doc_list
+    def __iter__(self):
+        for idx, doc in enumerate(self.doc_list):
+            yield LabeledSentence(doc.decode("utf-8").split(), [self.labels_list[idx]])
 
+    def to_array(self):
+        self.sentences = []
+        for idx, doc in enumerate(self.doc_list):
+            self.sentences.append(LabeledSentence(doc.decode("utf-8").split(), [self.labels_list[idx]]))
+        return self.sentences;
+
+    def suffle(self):
+        shuffle(self.sentences)
+        return self.sentences
 
 model = gensim.models.Doc2Vec(size=300, window=10, min_count=5, workers=11,alpha=0.025, min_alpha=0.025) # use fixed learning rate
 
 sentences = LabeledLineSentence(dataset.data, dataset.target)
 
-# model.build_vocab(sentences)
-model.build_vocab(sentences.to_array())
-
+model.build_vocab(sentences)
 model.train(sentences)
+
+
+
+# model.build_vocab(sentences.to_array())
 
 # Training Doc2Vec
 # Now we train the model. The model is better trained if in each training epoch,
@@ -79,11 +89,15 @@ model.train(sentences)
 # This is important: missing out on this steps gives you really shitty results.
 # This is the reason for the suffle method in our LabeledLineSentences class.
 
-for epoch in range(10):
-    model.train(sentences.suffle())
+# for epoch in range(2):
+#     print("Epoch %i" % epoch)
+#     model.train(sentences.suffle())
 
 
 # for epoch in range(10):
+#     print("Epoch %i" % epoch)
 #     model.train(sentences)
 #     model.alpha -= 0.002  # decrease the learning rate
 #     model.min_alpha = model.alpha  # fix the learning rate, no decay
+
+
